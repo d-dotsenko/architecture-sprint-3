@@ -1,0 +1,29 @@
+@startuml
+title "Теплый дом" Component Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(FitLifeSystem, "Теплый дом System") {
+  Container(DeviceService, "Device Service", "Java, Spring", "Регистрирует и получает устройства")
+  Container(Database, "Database", "PostgreSQL", "Идентификаторы устройств")
+}
+
+Container(DeviceService, "Device Service", "Java, Spring") {
+  Component(AuthController, "AuthController", "Управляет аутентификацией устройств")
+  Component(DeviceController, "DeviceController", "Валидирует запросы получения устройств")
+  Component(ServiceLayer, "Service Layer", "Бизнес логика")
+  Component(RepositoryLayer, "Repository Layer", "Логика доступа к данным")
+}
+
+Container_Ext(Devices, "Devices", "Устройство")
+Container_Ext(Sensors, "Sensors", "Датчик")
+
+Rel(AuthController,ServiceLayer,"Обращение к бизнес логике")
+Rel(DeviceController,ServiceLayer,"Обращение к бизнес логике")
+Rel(ServiceLayer,RepositoryLayer,"Сохраняет/запрашивает устройства")
+Rel(RepositoryLayer,Database,"Чтение/запись данных")
+Rel(ServiceLayer,Devices,"Настройка устройства")
+Rel(ServiceLayer,Sensors,"Настройка датчика")
+@enduml
