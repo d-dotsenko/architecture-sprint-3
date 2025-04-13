@@ -1,0 +1,50 @@
+@startuml
+title "Теплый дом" Device Service Code Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+class DeviceService {
+  +void registerDevice()
+  +void registerSensor()
+  +void getDevicesAndSensors()
+}
+
+class Device {
+  +Uuid id
+  +Uuid userId
+  +String model
+  +String type
+  +Sensor sensor
+  +Settings settings
+  +void register()
+  +void activate()
+  +void cancel()
+}
+
+class Sensor {
+  +Uuid id
+  +Uuid userId
+  +String model
+  +String type
+  +Device device
+  +void register()
+  +void activate()
+  +void cancel()
+}
+
+class Settings {
+  +Date startDate
+  +Date stopDate
+  +String activity
+  +void addActivity()
+  +void removeActivity()
+}
+
+DeviceService -- Device : register
+DeviceService -- Sensor : register
+Device "1" -- "1" Sensor : has
+Device "1" -- "1" Settings : has
+
+@enduml

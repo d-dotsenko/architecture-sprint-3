@@ -1,0 +1,70 @@
+@startuml
+title "Теплый дом" ER Diagram
+
+entity "User" as user {
+  *id : uuid
+  --
+  *name : string
+  *token : string
+  *created_at : timestamp
+}
+
+entity "House" as house {
+  *id : uuid
+  *user_id : uuid <<FK>>
+  --
+  *address : string
+}
+
+entity "Device" as device {
+  *id : uuid
+  *user_id : uuid <<FK>>
+  --
+  *model : string
+  *type : string
+  *state : string
+  *serial_number : string
+  *description : string
+  *created_at : timestamp
+}
+
+entity "Sensor" as sensor {
+  *id : uuid
+  *user_id : uuid <<FK>>
+  *device_id : uuid <<FK>>
+  --
+  *model : string
+  *type : string
+  *state : string
+  *value : string
+  *serial_number : string
+  *description : string
+  *created_at : timestamp
+}
+
+entity "Telemetry" as telemetry {
+  *id : uuid
+  *device_id : uuid <<FK>>
+  --
+  *value : string
+  *description : string
+}
+
+entity "Settings" as settings {
+  *id : uuid
+  *device_id : uuid <<FK>>
+  --
+  *activity : string
+  *start_at : timestamp
+  *stop_at : timestamp
+}
+
+user ||..|| house
+user ||..o{ sensor
+user ||..o{ device
+device ||..o{ sensor
+device ||..|| settings
+device ||..|| telemetry
+
+
+@enduml

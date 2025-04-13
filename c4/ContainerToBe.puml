@@ -1,0 +1,77 @@
+@startuml
+title "Теплый дом" Container Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(client, "Клиент")
+Person(admin, "Инженер")
+
+Container_Boundary(WebApp, "Система Теплый дом") {
+    Container(Web, "ЛК Теплый дом", "Вэб морда, сайт", "React")
+    Container(ApiGateway, "Api Gateway", "Гейтвэй и лоадбалансер")
+    Container(User, "User Service", "Сервис для аутентификации и получения данный клиента")
+    ContainerDb(UserDB, "User DB")
+    Container(Manager, "Manager Service", "Сервис для управления приборами")
+    ContainerDb(ManagerDB, "Manager DB")
+    Container(Monitor, "Monitor Service", "Сервис для получения данных с приборов")
+    ContainerDb(MonitorDB, "Monitor DB")
+    Container(Device, "Device Service", "Сервис для регистрации и добавления приборов и сенсоров")
+    ContainerDb(DeviceDB, "Api Gateway DB")
+    Container(Kafka, "Kafka", "Брокер сообщений")
+}
+
+Container_Boundary(Dev, "Приборы клиента") {
+    System_Ext(SensorD, "Sensor", "Датчик")
+    System_Ext(DeviceD, "Device", "Прибор")
+}
+
+Rel(client,Web,"Взаимодействие клиента с системой")
+Rel(admin,Web,"Взаимодействие админа с системой")
+
+Rel(Web,ApiGateway,"Запросы с фронта")
+Rel(ApiGateway,User,"Вход/регистрация клиента/админа")
+Rel(ApiGateway,Manager,"Задать значение для устройств")
+Rel(ApiGateway,Monitor,"Запросить значения с датчиков")
+Rel(ApiGateway,Device,"Добавить устройсто или датчик")
+Rel(User,UserDB, "запись/чтение")
+Rel(Manager,ManagerDB, "запись/чтение")
+Rel(Monitor,MonitorDB, "запись/чтение")
+Rel(Device,DeviceDB, "запись/чтение")
+
+Rel(Device,SensorD, "Конфигурирование")
+Rel(Device,DeviceD, "Конфигурирование")
+Rel(DeviceD,Kafka, "Передача информации")
+Rel(SensorD,Kafka, "Передача информации")
+
+Rel(Manager,Kafka, "Передача значений для устройства")
+Rel(Kafka,Monitor, "Получение значений с датчика")
+
+
+
+'Container_Boundary(FitLifeSystem, "FitLife System") {
+'  Container(WebApp, "Web Application", "Java, Spring", "Handles user interactions")
+'  Container(Database, "Database", "PostgreSQL", "Stores user data and schedules")
+'}
+
+'Container(WebApp, "Система Теплый дом") {
+'  Component(AuthController, "AuthController", "Handles authentication and authorization")
+'  Component(UserController, "UserController", "Manages user profiles")
+'  Component(ScheduleController, "ScheduleController", "Manages schedules")
+'  Component(PaymentController, "PaymentController", "Handles payment processing")
+'  Component(ServiceLayer, "Service Layer", "Business logic")
+'  Component(RepositoryLayer, "Repository Layer", "Data access logic")
+'}
+'
+'Rel(AuthController,ServiceLayer,"Calls business logic")
+'Rel(UserController,ServiceLayer,"Calls business logic")
+'Rel(ScheduleController,ServiceLayer,"Calls business logic")
+'Rel(PaymentController,ServiceLayer,"Calls business logic")
+'Rel(ServiceLayer,RepositoryLayer,"Reads/Writes data")
+'Rel(RepositoryLayer,Database,"Reads/Writes user data")
+
+
+
+
+@enduml
